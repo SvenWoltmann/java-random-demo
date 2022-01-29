@@ -1,7 +1,10 @@
 package eu.happycoders.random.sequence;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.random.RandomGenerator;
 
 public class SequenceRepetitionFinder {
@@ -13,6 +16,7 @@ public class SequenceRepetitionFinder {
   private final RandomGenerator random;
   private final long randomSequenceLength;
   private final int[] storedSequence;
+  private final Map<Integer, AtomicLong> matchLengthCounters = new HashMap<>();
 
   private long startTime;
 
@@ -43,7 +47,9 @@ public class SequenceRepetitionFinder {
 
       int matchLength = countMatchingNumbers();
       printMatchingSequence(matchLength, sequencePosition);
+      matchLengthCounters.computeIfAbsent(matchLength, key -> new AtomicLong()).incrementAndGet();
       if (matchLength == storedSequence.length) {
+        System.out.println("matchLengthCounters = " + matchLengthCounters);
         return getResultForMatchAt(sequencePosition);
       }
       sequencePosition += matchLength;
