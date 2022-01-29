@@ -14,7 +14,10 @@ public class ThreadLocalRandomMultipleThreadsDemo {
       System.out.printf("Round %d%n", i + 1);
       testSingleThreaded("single thread");
       testWithMultipleThreads(2);
+      testWithMultipleThreads(3);
       testWithMultipleThreads(4);
+      testWithMultipleThreads(5);
+      testWithMultipleThreads(6);
     }
   }
 

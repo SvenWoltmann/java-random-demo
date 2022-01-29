@@ -4,25 +4,23 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-public class RandomMultipleThreadsDemo {
+public class MultipleRandomMultipleThreadsDemo {
 
   private static final int NUMBER_OF_NUMBERS = 100_000_000;
 
   public static void main(String[] args) {
-    Random r = new Random();
-
     for (int i = 0; i < 10; i++) {
       System.out.printf("Round %d%n", i + 1);
-      testSingleThreaded(r, "single thread");
-      testWithMultipleThreads(r, 2);
-      testWithMultipleThreads(r, 3);
-      testWithMultipleThreads(r, 4);
-      testWithMultipleThreads(r, 5);
-      testWithMultipleThreads(r, 6);
+      testSingleThreaded("single thread");
+      testWithMultipleThreads(2);
+      testWithMultipleThreads(3);
+      testWithMultipleThreads(4);
+      testWithMultipleThreads(5);
+      testWithMultipleThreads(6);
     }
   }
 
-  private static void testWithMultipleThreads(Random r, int numberOfThreads) {
+  private static void testWithMultipleThreads(int numberOfThreads) {
     CountDownLatch startLatch = new CountDownLatch(1);
     CountDownLatch stopLatch = new CountDownLatch(numberOfThreads);
     for (int i = 0; i < numberOfThreads; i++) {
@@ -30,7 +28,7 @@ public class RandomMultipleThreadsDemo {
               () -> {
                 try {
                   startLatch.await();
-                  testSingleThreaded(r, numberOfThreads + " threads");
+                  testSingleThreaded(numberOfThreads + " threads");
                   stopLatch.countDown();
                 } catch (InterruptedException e) {
                   // let thread die
@@ -46,7 +44,9 @@ public class RandomMultipleThreadsDemo {
     }
   }
 
-  private static void testSingleThreaded(Random r, String description) {
+  private static void testSingleThreaded(String description) {
+    Random r = new Random();
+
     long blackhole = 0;
     long time = System.currentTimeMillis();
 
