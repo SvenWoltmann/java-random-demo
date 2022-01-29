@@ -1,2 +1,2 @@
-# java-random-demo
-Java random number generation demos  
+# Java Random Number Generation Demo
+
