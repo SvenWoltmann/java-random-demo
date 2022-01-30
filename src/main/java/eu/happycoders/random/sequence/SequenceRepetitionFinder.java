@@ -1,7 +1,10 @@
 package eu.happycoders.random.sequence;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -16,6 +19,8 @@ public class SequenceRepetitionFinder {
   private final RandomGenerator random;
   private final long randomSequenceLength;
   private final int[] storedSequence;
+
+  private final List<Long> foundSequenceStarts = new ArrayList<>();
   private final Map<Integer, AtomicLong> matchLengthCounters = new HashMap<>();
 
   private long startTime;
@@ -37,27 +42,21 @@ public class SequenceRepetitionFinder {
     storeInitialSequence();
 
     int firstNumberInStoredSequence = storedSequence[0];
-    long sequencePosition = storedSequence.length;
+    long sequencePosition = storedSequence.length - 1;
+
     while (true) {
-      int number = random.nextInt();
-      if (number != firstNumberInStoredSequence) {
-        sequencePosition++;
-        continue;
-      }
-
-      int matchLength = countMatchingNumbers();
-      printMatchingSequence(matchLength, sequencePosition);
-      matchLengthCounters.computeIfAbsent(matchLength, key -> new AtomicLong()).incrementAndGet();
-      if (matchLength == storedSequence.length) {
-        System.out.println("matchLengthCounters = " + matchLengthCounters);
-        return getResultForMatchAt(sequencePosition);
-      }
-      sequencePosition += matchLength;
-
-      // In countMatchingNumbers, one more random number was generated, which we ignore.
-      // Handling that number would be complicated and the probability is extremely low that it
-      // would start a new sequence
       sequencePosition++;
+      int number = random.nextInt();
+
+      if (number == firstNumberInStoredSequence) {
+        startComparingNewSequence(sequencePosition);
+      }
+
+      // Any sequences being checked?
+      if (!foundSequenceStarts.isEmpty()) {
+        Result result = compareWithAllSequencesCurrentlyBeingCompared(number, sequencePosition);
+        if (result != null) return result;
+      }
     }
   }
 
@@ -67,22 +66,34 @@ public class SequenceRepetitionFinder {
     }
   }
 
-  /**
-   * Compares the next ints from the random number generator with the stored sequence, starting at
-   * the second number (the first was already compared)
-   *
-   * @return the number of matching numbers; at least 1; at most <code>storedSequence.length</code>
-   */
-  private int countMatchingNumbers() {
-    for (int i = 1; i < storedSequence.length; i++) {
-      int number = random.nextInt();
-      if (storedSequence[i] != number) {
-        return i;
+  private void startComparingNewSequence(long sequencePosition) {
+    foundSequenceStarts.add(sequencePosition);
+  }
+
+  private Result compareWithAllSequencesCurrentlyBeingCompared(int number, long sequencePosition) {
+    for (Iterator<Long> iterator = foundSequenceStarts.iterator(); iterator.hasNext(); ) {
+      long foundSequenceStart = iterator.next();
+      int foundSequencePos = (int) (sequencePosition - foundSequenceStart);
+
+      // Ignore sequence just started
+      if (foundSequencePos == 0) {
+        continue;
+      }
+
+      boolean match = number == storedSequence[foundSequencePos];
+      if (!match || foundSequencePos == storedSequence.length - 1) {
+        long sequenceStartPosition = sequencePosition - foundSequencePos;
+        int matchLength = match ? foundSequencePos + 1 : foundSequencePos;
+        printMatchingSequence(matchLength, sequenceStartPosition);
+        matchLengthCounters.computeIfAbsent(matchLength, key -> new AtomicLong()).incrementAndGet();
+        iterator.remove();
+
+        if (match) {
+          return getResultForMatchAt(sequenceStartPosition);
+        }
       }
     }
-
-    // No mismatch found -> all match
-    return storedSequence.length;
+    return null;
   }
 
   private void printMatchingSequence(int matchLength, long sequencePosition) {
