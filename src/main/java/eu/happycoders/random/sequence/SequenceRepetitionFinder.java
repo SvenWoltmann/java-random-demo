@@ -44,19 +44,36 @@ public class SequenceRepetitionFinder {
     int firstNumberInStoredSequence = storedSequence[0];
     long sequencePosition = storedSequence.length - 1;
 
+    int number;
     while (true) {
-      sequencePosition++;
-      int number = random.nextInt();
+      // First loop ... without comparing sequences to avoid extra check (costs ~70 hours in total)
+      while (true) {
+        sequencePosition++;
+        number = random.nextInt();
 
-      if (number == firstNumberInStoredSequence) {
-        startComparingNewSequence(sequencePosition);
+        if (number == firstNumberInStoredSequence) {
+          startComparingNewSequence(sequencePosition);
+          break;
+        }
       }
 
-      // Any sequences being checked?
-      if (!foundSequenceStarts.isEmpty()) {
-        Result result = compareWithAllSequencesCurrentlyBeingCompared(number, sequencePosition);
+      Result result = compareWithAllSequencesCurrentlyBeingCompared(number, sequencePosition);
+      if (result != null) return result;
+
+      // Second loop ... with comparing sequences
+      do {
+        sequencePosition++;
+        number = random.nextInt();
+
+        if (number == firstNumberInStoredSequence) {
+          startComparingNewSequence(sequencePosition);
+        }
+
+        result = compareWithAllSequencesCurrentlyBeingCompared(number, sequencePosition);
         if (result != null) return result;
-      }
+
+        // No more sequences being checked? Go back to fast loop!
+      } while (!foundSequenceStarts.isEmpty());
     }
   }
 
