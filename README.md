@@ -3,7 +3,7 @@
 ## Article
 
 The code refers to the following articles:
-* English: Coming soon
+* English: [Generating Random Numbers in Java](https://www.happycoders.eu/java/random-number/)
 * German: [Zufallszahlen in Java](https://www.happycoders.eu/de/java/zufallszahl/)
 
 
