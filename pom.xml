@@ -16,7 +16,7 @@
     <!-- Dependency versions -->
     <junit.jupiter.version>5.9.3</junit.jupiter.version>
     <assertj.version>3.24.2</assertj.version>
-    <mockito.version>5.3.1</mockito.version>
+    <mockito.version>5.4.0</mockito.version>
 
     <!-- Plugin versions -->
     <spotless.version>2.37.0</spotless.version>
