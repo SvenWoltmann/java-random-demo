@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Dependency versions -->
-    <junit.jupiter.version>6.0.0</junit.jupiter.version>
+    <junit.jupiter.version>6.0.1</junit.jupiter.version>
     <assertj.version>3.27.6</assertj.version>
     <mockito.version>5.19.0</mockito.version>
 
