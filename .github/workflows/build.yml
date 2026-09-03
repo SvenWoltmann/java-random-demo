@@ -1,0 +1,59 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-jvm:
+    name: Build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      # The JDK that RUNS the build, not the one it targets: the sources stay
+      # on maven.compiler.source/target 17. Dependabot keeps raising the plugin
+      # versions, each with its own JDK floor, without knowing which JDK the
+      # workflow uses - a recent JDK buys room before the next floor is raised.
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          # 'adopt' was the AdoptOpenJDK alias; setup-java dropped it after the
+          # project became Eclipse Temurin. Dependabot keeps the action version
+          # current but cannot know that an input value went away.
+          distribution: 'temurin'
+          java-version: 25
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Verify code format
+        run: mvn -B spotless:check
+
+      - name: Compile, test and verify
+        run: mvn -B verify -Ptest-coverage
+
+      - name: Analyze code with Sonar
+        if: ${{ env.SONAR_TOKEN }} # the token is not available in Dependabot-triggered builds
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
