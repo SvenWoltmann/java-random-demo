@@ -16,9 +16,9 @@ public class RandomIntegerPairRepetitionFinder {
   private static final int SEED_NOISE_BITS = 16;
   private static final int NUMBER_OF_POSSIBLE_SEEDS = 1 << SEED_NOISE_BITS;
 
-  private static final long multiplier = 0x5DEECE66DL;
-  private static final long addend = 0xBL;
-  private static final long mask = (1L << 48) - 1;
+  private static final long MULTIPLIER = 0x5DEECE66DL;
+  private static final long ADDEND = 0xBL;
+  private static final long MASK = (1L << 48) - 1;
 
   private final List<IntegerPair> integerPairsFoundTwice = new ArrayList<>();
 
@@ -93,7 +93,7 @@ public class RandomIntegerPairRepetitionFinder {
   }
 
   private int getNextInt(long oldseed) {
-    long nextseed = (oldseed * multiplier + addend) & mask;
+    long nextseed = (oldseed * MULTIPLIER + ADDEND) & MASK;
     return (int) (nextseed >>> 16);
   }
 

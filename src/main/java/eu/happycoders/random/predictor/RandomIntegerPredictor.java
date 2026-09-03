@@ -10,9 +10,9 @@ public class RandomIntegerPredictor {
   private static final int SEED_NOISE_BITS = 16;
   private static final int NUMBER_OF_POSSIBLE_SEEDS = 1 << SEED_NOISE_BITS;
 
-  private static final long multiplier = 0x5DEECE66DL;
-  private static final long addend = 0xBL;
-  private static final long mask = (1L << 48) - 1;
+  private static final long MULTIPLIER = 0x5DEECE66DL;
+  private static final long ADDEND = 0xBL;
+  private static final long MASK = (1L << 48) - 1;
 
   private final int[] givenNumbers;
 
@@ -81,7 +81,7 @@ public class RandomIntegerPredictor {
   }
 
   private long nextSeed(long seed) {
-    return (seed * multiplier + addend) & mask;
+    return (seed * MULTIPLIER + ADDEND) & MASK;
   }
 
   private int intFromSeed(long seed) {

@@ -50,13 +50,6 @@ public class RandomIntegerPredictorRunner {
     }
   }
 
-  private static void printResult(int[] predictedNumbers) {
-    System.out.println("Prediction of the next random numbers:");
-    for (int predictedNumber : predictedNumbers) {
-      System.out.printf(Locale.US, "%,d%n", predictedNumber);
-    }
-  }
-
   // Sonar S6218 wants equals/hashCode/toString for the array component; this
   // record only carries parsed input through the runner and is never compared.
   @SuppressWarnings("java:S6218")

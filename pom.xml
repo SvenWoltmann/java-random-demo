@@ -29,10 +29,13 @@
     <sonar.organization>svenwoltmann</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <!-- run() is built as two loops on purpose (the fast one without comparisons saves hours); the comment in the code explains it. -->
+    <sonar.issue.ignore.multicriteria.e2.ruleKey>java:S3776</sonar.issue.ignore.multicriteria.e2.ruleKey>
+    <sonar.issue.ignore.multicriteria.e2.resourceKey>**/SequenceRepetitionFinder.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
     <!-- Coverage counts the predictor and sequence logic, not the demo programs and their helpers. -->
     <sonar.coverage.exclusions>**/*Demo.java,**/*Runner.java,**/*Example.java,**/RandomIntegerPairRepetitionFinder.java,**/util/**</sonar.coverage.exclusions>
 
-    <sonar.issue.ignore.multicriteria>e1</sonar.issue.ignore.multicriteria>
+    <sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
     <!-- The demos print their results; System.out is the program's output, not logging. -->
     <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S106</sonar.issue.ignore.multicriteria.e1.ruleKey>
     <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
