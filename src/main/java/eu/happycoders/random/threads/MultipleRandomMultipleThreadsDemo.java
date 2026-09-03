@@ -31,7 +31,9 @@ public class MultipleRandomMultipleThreadsDemo {
                   testSingleThreaded(numberOfThreads + " threads");
                   stopLatch.countDown();
                 } catch (InterruptedException e) {
-                  // let thread die
+                  // Nothing reads the flag - this thread ends right here - but
+                  // restoring it is the idiom Sonar and readers expect.
+                  Thread.currentThread().interrupt();
                 }
               })
           .start();
@@ -44,6 +46,9 @@ public class MultipleRandomMultipleThreadsDemo {
     }
   }
 
+  // Sonar S2119 wants the Random saved and re-used; creating one per call is
+  // exactly what this demo measures (as opposed to RandomMultipleThreadsDemo).
+  @SuppressWarnings("java:S2119")
   private static void testSingleThreaded(String description) {
     Random r = new Random();
 

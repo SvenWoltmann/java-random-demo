@@ -57,5 +57,8 @@ public class RandomIntegerPredictorRunner {
     }
   }
 
+  // Sonar S6218 wants equals/hashCode/toString for the array component; this
+  // record only carries parsed input through the runner and is never compared.
+  @SuppressWarnings("java:S6218")
   private static record PredictorInput(int numberOfPredictions, int[] givenNumbers) {}
 }

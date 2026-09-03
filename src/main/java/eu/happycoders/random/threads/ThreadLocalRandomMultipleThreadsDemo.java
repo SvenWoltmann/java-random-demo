@@ -32,7 +32,9 @@ public class ThreadLocalRandomMultipleThreadsDemo {
                   testSingleThreaded(numberOfThreads + " threads");
                   stopLatch.countDown();
                 } catch (InterruptedException e) {
-                  // let thread die
+                  // Nothing reads the flag - this thread ends right here - but
+                  // restoring it is the idiom Sonar and readers expect.
+                  Thread.currentThread().interrupt();
                 }
               })
           .start();

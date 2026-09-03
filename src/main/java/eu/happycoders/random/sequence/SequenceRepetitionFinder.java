@@ -42,7 +42,7 @@ public class SequenceRepetitionFinder {
     storeInitialSequence();
 
     int firstNumberInStoredSequence = storedSequence[0];
-    long sequencePosition = storedSequence.length - 1;
+    long sequencePosition = storedSequence.length - 1L;
 
     int number;
     while (true) {
