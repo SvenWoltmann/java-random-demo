@@ -4,6 +4,9 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
+
+  private RandomUtils() {}
+
   public static int nextInt(Random random, int origin, int bound) {
     if (origin >= bound) {
       throw new IllegalArgumentException();
